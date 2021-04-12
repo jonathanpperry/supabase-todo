@@ -6,6 +6,14 @@ import { environment } from 'src/environments/environment';
 
 const TODO_DB = 'todos';
 
+export interface Todo {
+  id: number;
+  inserted_at: string;
+  is_complete: boolean;
+  task: string;
+  user_id: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -73,6 +81,10 @@ export class SupabaseService {
     return this._todos.asObservable();
   }
 
+  get currentUser() {
+    return this._currentUser;
+  }
+
   async loadTodos() {
     const query = await this.supabase.from(TODO_DB).select('*');
     console.log('Query: ', query);
@@ -102,6 +114,25 @@ export class SupabaseService {
       .from(TODO_DB)
       .on('*', (payload) => {
         console.log('payload: ', payload);
+        if (payload.eventType == 'DELETE') {
+          const oldItem: Todo = payload.old;
+          const newValue = this._todos.value.filter(
+            (item) => oldItem.id != item.id
+          );
+          this._todos.next(newValue);
+        } else if (payload.eventType == 'INSERT') {
+          const newItem: Todo = payload.new;
+          this._todos.next([...this._todos.value, newItem]);
+        } else if (payload.eventType == 'UPDATE') {
+          const updatedItem: Todo = payload.new;
+          const newValue = this._todos.value.map((item) => {
+            if (updatedItem.id == item.id) {
+              item = updatedItem;
+            }
+            return item;
+          });
+          this._todos.next(newValue);
+        }
       })
       .subscribe();
   }

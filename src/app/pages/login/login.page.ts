@@ -66,6 +66,8 @@ export class LoginPage implements OnInit {
   async showError(title, msg) {
     const alert = await this.alertController.create({
       header: title,
+      message: msg,
     });
+    await alert.present();
   }
 }
