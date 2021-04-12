@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SupabaseService } from 'src/app/services/supabase.service';
 
 @Component({
   selector: 'app-list',
@@ -6,10 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./list.page.scss'],
 })
 export class ListPage implements OnInit {
+  items = this.supabaseService.todos;
 
-  constructor() { }
+  constructor(private supabaseService: SupabaseService) {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }
