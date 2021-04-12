@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  supabaseUrl: 'db.vgaxboobleoukobdoeol.supabase.co',
+  supabaseUrl: 'https://vgaxboobleoukobdoeol.supabase.co',
   supabaseKey:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYxODE5NzY2NywiZXhwIjoxOTMzNzczNjY3fQ.3Ooudq0PrfQfTZ2xyaOuLfTcvTDB2cfj71MspmCW9Yc',
 };
