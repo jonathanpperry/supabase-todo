@@ -43,7 +43,7 @@ export class SupabaseService {
     });
   }
 
-  async signIn() {
+  async signIn(credentials: { email; password }) {
     return new Promise(async (resolve, reject) => {
       const { error, data } = await this.supabase.auth.signIn(credentials);
       if (error) {

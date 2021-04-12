@@ -1,9 +1,37 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>login</ion-title>
+    <ion-title>Supabase</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <form (ngSubmit)="login()" [formGroup]="credentials">
+    <div class="input-group">
+      <ion-item>
+        <ion-input
+          placeholder="john@doe.com"
+          formControlName="email"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input
+          type="password"
+          placeholder="password"
+          formControlName="password"
+        ></ion-input>
+      </ion-item>
+    </div>
 
+    <ion-button type="submit" expand="block" [disabled]="!credentials.valid"
+      >Log In</ion-button
+    >
+    <ion-button
+      type="button"
+      expand="block"
+      [disabled]="!credentials.valid"
+      (click)="signUp()"
+      color="secondary"
+      >Sign Up!</ion-button
+    >
+  </form>
 </ion-content>

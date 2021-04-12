@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { SupabaseService } from 'src/app/services/supabase.service';
 
 @Component({
@@ -7,16 +10,62 @@ import { SupabaseService } from 'src/app/services/supabase.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-
-  constructor(private supabaseService: SupabaseService) { }
+  credentials: FormGroup;
+  constructor(
+    private fb: FormBuilder,
+    private alertController: AlertController,
+    private router: Router,
+    private loadingController: LoadingController,
+    private supabaseService: SupabaseService
+  ) {}
 
   ngOnInit() {
+    this.credentials = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+    });
   }
 
-  signUp() {
-    this.supabaseService({'', ''}).then(data => {
-      if (data.error) {}
-    })
+  async login() {
+    const loading = await this.loadingController.create();
+    await loading.present();
+
+    this.supabaseService.signIn(this.credentials.value).then(
+      async (data) => {
+        await loading.dismiss();
+        this.router.navigateByUrl('/list', { replaceUrl: true });
+      },
+      async (err) => {
+        await loading.dismiss();
+        this.showError('Login failed', err.message);
+      }
+    );
   }
 
+  async signUp() {
+    const loading = await this.loadingController.create();
+    await loading.present();
+
+    this.supabaseService.signUp(this.credentials.value).then(
+      async (data) => {
+        await loading.dismiss();
+        this.showError('Sign Up success', 'Please confirm your email now!');
+      },
+      async (err) => {
+        await loading.dismiss();
+        const alert = await this.alertController.create({
+          header: 'Registration failed',
+          message: err.error.msg,
+          buttons: ['OK'],
+        });
+        await alert.present();
+      }
+    );
+  }
+
+  async showError(title, msg) {
+    const alert = await this.alertController.create({
+      header: title,
+    });
+  }
 }
